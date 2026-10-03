@@ -1,0 +1,555 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+  --font-display: "Bricolage Grotesque", "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ring-offset-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-foreground: var(--surface-foreground);
+  --color-ink: var(--ink);
+  --color-brand-warm: var(--brand-warm);
+  --color-brand-warm-soft: var(--brand-warm-soft);
+  --color-brand-warm-foreground: var(--brand-warm-foreground);
+  --color-brand-deep: var(--brand-deep);
+  --color-brand-night: var(--brand-night);
+  --color-cobalt: var(--primary);
+  --shadow-soft: var(--shadow-soft);
+  --shadow-lift: var(--shadow-lift);
+  --shadow-deep: var(--shadow-deep);
+}
+
+/*
+ * NextMind brand palette — sampled from the academy poster.
+ *   navy   #00144F  (backgrounds, headings)
+ *   cobalt #1A27C9  (logo mark, links, focus)
+ *   sun    #FFD11D  (CTAs, highlights)
+ *   white  #FFFFFF
+ */
+:root {
+  --radius: 0.9rem;
+  --background: #ffffff;
+  --foreground: #0b1440;
+  --ink: #14206e;
+  --surface: #f2f5fe;
+  --surface-foreground: #0b1440;
+  --card: #ffffff;
+  --card-foreground: #0b1440;
+  --popover: #ffffff;
+  --popover-foreground: #0b1440;
+  --primary: #1a27c9;
+  --primary-foreground: #ffffff;
+  --secondary: #e9eefc;
+  --secondary-foreground: #17288a;
+  --muted: #f2f5fe;
+  --muted-foreground: #4a5580;
+  --accent: #e8edfc;
+  --accent-foreground: #17288a;
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: #ffffff;
+  --border: #dce3f8;
+  --input: #c9d4f2;
+  --ring: #1a27c9;
+  --brand-warm: #f2c74e;
+  --brand-warm-soft: #faf0d2;
+  --brand-warm-foreground: #17288a;
+  --brand-deep: #17288a;
+  --brand-night: #0e1747;
+  --gradient-hero: linear-gradient(180deg, #ffffff 0%, #eef2fd 100%);
+  --gradient-accent: linear-gradient(90deg, #17288a 0%, #1a27c9 62%, #ffd11d 100%);
+  --shadow-soft: 0 1px 2px rgb(0 20 79 / 0.05), 0 10px 28px -14px rgb(0 20 79 / 0.16);
+  --shadow-lift: 0 2px 6px rgb(0 20 79 / 0.06), 0 24px 48px -20px rgb(0 20 79 / 0.30);
+  --shadow-deep: 0 40px 80px -30px rgb(0 11 53 / 0.55);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+    }
+    .float-y { animation: none !important; }
+  }
+
+  section[id] {
+    scroll-margin-top: 7.5rem;
+  }
+
+  :where(a, button, input, textarea, select):focus-visible {
+    outline: 3px solid var(--color-ring);
+    outline-offset: 3px;
+  }
+
+  /* Yellow focus ring on navy surfaces so keyboard users never lose it */
+  :where(.on-dark) :where(a, button, input, textarea, select):focus-visible {
+    outline-color: var(--brand-warm);
+  }
+
+  ::selection {
+    background: var(--brand-warm);
+    color: var(--brand-deep);
+  }
+
+  /* Smooth, consistent feedback for every interactive surface */
+  a,
+  button,
+  input,
+  textarea,
+  select {
+    transition:
+      color 200ms ease,
+      background-color 200ms ease,
+      border-color 200ms ease,
+      box-shadow 200ms ease,
+      opacity 200ms ease;
+  }
+
+  :where(button, input, textarea, select):disabled {
+    cursor: not-allowed;
+    opacity: 0.62;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+    line-height: 1.12;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  p,
+  li {
+    line-height: 1.65;
+  }
+}
+
+@utility bg-hero {
+  background-image: var(--gradient-hero);
+}
+
+@utility bg-gradient-accent {
+  background-image: var(--gradient-accent);
+}
+
+@utility text-gradient {
+  background-image: var(--gradient-accent);
+  background-clip: text;
+  color: transparent;
+}
+
+@utility campus-image {
+  transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+
+  &:hover {
+    transform: scale(1.035);
+  }
+}
+
+@utility section-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-primary);
+
+  &::before {
+    content: "";
+    width: 0.65rem;
+    height: 0.65rem;
+    border-radius: 9999px;
+    border: 3px solid var(--color-brand-warm);
+  }
+}
+
+@utility btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  border-radius: 9999px;
+  padding: 0.95rem 1.9rem;
+  font-weight: 800;
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
+  background-color: var(--color-brand-warm);
+  color: var(--color-brand-deep);
+  box-shadow: inset 0 -3px 0 rgb(0 20 79 / 0.16), 0 12px 26px -14px rgb(0 20 79 / 0.55);
+  min-height: 3rem;
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1), background-color 200ms ease, box-shadow 220ms ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    background-color: #f7d572;
+    box-shadow: inset 0 -3px 0 rgb(0 20 79 / 0.16), 0 18px 34px -16px rgb(0 20 79 / 0.6);
+  }
+
+  &:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: inset 0 -2px 0 rgb(0 20 79 / 0.16), 0 8px 18px -12px rgb(0 20 79 / 0.5);
+  }
+}
+
+@utility btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  padding: 0.95rem 1.8rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
+  border: 2px solid var(--color-brand-deep);
+  background-color: transparent;
+  color: var(--color-brand-deep);
+  min-height: 3rem;
+  transition: background-color 200ms ease, color 200ms ease, transform 220ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 220ms ease;
+
+  &:hover {
+    background-color: var(--color-brand-deep);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 14px 28px -16px rgb(0 20 79 / 0.5);
+  }
+
+  &:active {
+    transform: translateY(0) scale(0.98);
+  }
+}
+
+@utility btn-outline-light {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  padding: 0.85rem 1.6rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
+  border: 2px solid rgb(255 255 255 / 0.35);
+  background-color: transparent;
+  color: #fff;
+  min-height: 3rem;
+  transition: background-color 200ms ease, border-color 200ms ease, transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+
+  &:hover {
+    background-color: rgb(255 255 255 / 0.12);
+    border-color: #fff;
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0) scale(0.98);
+  }
+}
+
+@utility card-soft {
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-soft);
+  transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 260ms ease, border-color 260ms ease;
+}
+
+@utility section-shell {
+  width: 100%;
+  max-width: 72rem;
+  margin-inline: auto;
+  padding: 5.5rem 1.5rem;
+
+  @media (min-width: 640px) {
+    padding-top: 7rem;
+    padding-bottom: 7rem;
+    padding-inline: 2.5rem;
+  }
+
+  @media (min-width: 1280px) {
+    padding-inline: 0;
+  }
+}
+
+@utility section-sheet {
+  position: relative;
+  overflow: hidden;
+  margin-top: -2.25rem;
+  padding-top: 2.25rem;
+  border-top-left-radius: 2.5rem;
+  border-top-right-radius: 2.5rem;
+  box-shadow: 0 -24px 50px -34px rgb(15 26 90 / 0.45);
+}
+
+@utility section-heading {
+  max-width: 44rem;
+
+  & h2 {
+    margin-top: 0.9rem;
+    font-size: clamp(1.9rem, 3.6vw, 2.7rem);
+    line-height: 1.12;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+  }
+
+  & p:last-child {
+    margin-top: 1.1rem;
+    line-height: 1.75;
+    color: var(--color-muted-foreground);
+  }
+}
+
+@utility inset-panel {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-3xl);
+  background-color: var(--color-card);
+  box-shadow: var(--shadow-lift);
+}
+
+@utility empty-state {
+  display: flex;
+  min-height: 15rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed color-mix(in oklab, var(--color-primary) 28%, var(--color-border));
+  border-radius: var(--radius-2xl);
+  background-color: color-mix(in oklab, var(--color-surface) 64%, transparent);
+  padding: 2rem;
+  text-align: center;
+}
+
+@utility loading-block {
+  min-height: 8rem;
+  border-radius: var(--radius-2xl);
+  background: linear-gradient(90deg, var(--color-surface), var(--color-card), var(--color-surface));
+  background-size: 200% 100%;
+  animation: loading-sheen 1.5s ease-in-out infinite;
+}
+
+@keyframes loading-sheen {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
+@utility card-interactive {
+  transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 260ms ease, border-color 260ms ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    border-color: var(--color-brand-deep);
+    box-shadow: var(--shadow-lift);
+  }
+}
+
+/* Animated underline for top-level nav links */
+@utility nav-link {
+  position: relative;
+  padding-block: 0.25rem;
+  transition: color 200ms ease;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    bottom: -0.15rem;
+    height: 2px;
+    border-radius: 9999px;
+    background-color: var(--color-brand-warm);
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  &:hover::after,
+  &:focus-visible::after {
+    transform: scaleX(1);
+  }
+}
+
+@utility field-control {
+  width: 100%;
+  min-height: 3.1rem;
+  border: 1.5px solid var(--color-input);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-card);
+  padding: 0.7rem 1.05rem;
+  color: var(--color-foreground);
+  transition: border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+
+  &::placeholder {
+    color: color-mix(in oklab, var(--color-muted-foreground) 70%, transparent);
+  }
+
+  &:hover {
+    border-color: color-mix(in oklab, var(--color-brand-deep) 45%, var(--color-input));
+  }
+
+  &:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--color-primary) 16%, transparent);
+    outline: none;
+  }
+
+  &[dir="ltr"] {
+    text-align: left;
+  }
+}
+
+@utility eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  padding: 0.35rem 0.8rem;
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-brand-deep);
+  background-color: var(--color-brand-warm-soft);
+}
+
+
+/* ---------------------------------------------------------------
+   Signature pieces taken from the brand poster
+   --------------------------------------------------------------- */
+
+/* Reveal-on-scroll elements (needs the .in-view class from the IntersectionObserver in components) */
+@utility reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 560ms ease,
+    transform 680ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--rd, 0ms);
+  will-change: opacity, transform;
+
+  &.in-view {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (max-width: 640px) {
+    transform: translateY(10px);
+  }
+}
+
+@utility float-y {
+  animation: float-y 7s ease-in-out infinite alternate;
+}
+
+@keyframes float-y {
+  from { transform: translateY(-6px); }
+  to { transform: translateY(10px); }
+}
+
+/* One orchestrated entrance for the hero: children rise in sequence */
+@utility hero-in {
+  & > * {
+    animation: hero-rise 800ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: calc(var(--i, 0) * 90ms + 150ms);
+  }
+}
+
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Arabic (RTL) typography: Tajawal reads better than Sora/Manrope for Arabic script */
+html[dir="rtl"] body,
+html[dir="rtl"] input,
+html[dir="rtl"] textarea,
+html[dir="rtl"] select {
+  font-family: "Tajawal", var(--font-sans);
+}
+html[dir="rtl"] h1,
+html[dir="rtl"] h2,
+html[dir="rtl"] h3,
+html[dir="rtl"] h4,
+html[dir="rtl"] .font-display {
+  font-family: "Tajawal", var(--font-display);
+  letter-spacing: 0;
+}
+html[dir="rtl"] h1 {
+  line-height: 1.3;
+}
+html[dir="rtl"] h2 {
+  line-height: 1.3;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
