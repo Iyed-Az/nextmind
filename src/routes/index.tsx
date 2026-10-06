@@ -390,7 +390,8 @@ function Index() {
                       <img
                         src={c.src}
                         alt={c.label}
-                        loading="lazy"
+                        loading="eager"
+                        decoding="async"
                         width={608}
                         height={1080}
                         className="campus-image aspect-[3/4] w-full object-cover"
