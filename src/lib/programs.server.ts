@@ -19,6 +19,7 @@ export type ProgramInput = {
   points_ar: string[];
   image_url: string | null;
   price: number | null;
+  price_period: string;
   currency: string;
   duration: string;
   schedule: string;
@@ -93,6 +94,7 @@ export async function upsertProgram(input: ProgramInput): Promise<Program> {
     points_ar: input.points_ar.filter((p) => p.length > 0),
     image_url: input.image_url,
     price: input.price,
+    price_period: input.price_period,
     currency: input.currency,
     duration: input.duration,
     schedule: input.schedule,
