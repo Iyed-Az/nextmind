@@ -112,6 +112,8 @@ export type Database = {
           title: string
           title_ar: string
           updated_at: string
+          price_period: string
+          price: number | null
         }
         Insert: {
           ages?: string
@@ -133,6 +135,8 @@ export type Database = {
           title: string
           title_ar?: string
           updated_at?: string
+          price_period?: string
+          price?: number | null
         }
         Update: {
           ages?: string
@@ -154,6 +158,8 @@ export type Database = {
           title?: string
           title_ar?: string
           updated_at?: string
+          price_period?: string
+          price?: number | null
         }
         Relationships: []
       }
