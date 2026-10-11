@@ -84,6 +84,24 @@ export const saveProgram = createServerFn({ method: "POST" })
     await requireUnlocked();
     return upsertProgram(data);
   });
+export const uploadProgramImage = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) =>
+    z.object({ base64: z.string().min(1).max(4_000_000) }).parse(data),
+  )
+  .handler(async ({ data }) => {
+    await requireUnlocked();
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const bin = atob(data.base64);
+    const bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    const path = `${crypto.randomUUID()}.jpg`;
+    const { error } = await supabaseAdmin.storage
+      .from("program-images")
+      .upload(path, bytes, { contentType: "image/jpeg", upsert: false });
+    if (error) throw new Error(error.message);
+    const { data: pub } = supabaseAdmin.storage.from("program-images").getPublicUrl(path);
+    return { url: pub.publicUrl };
+  });
 
 export const deleteProgram = createServerFn({ method: "POST" })
   .inputValidator((data: { id: string }) => z.object({ id: z.string().uuid() }).parse(data))
