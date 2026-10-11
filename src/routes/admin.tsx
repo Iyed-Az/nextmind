@@ -484,6 +484,15 @@ const handleImageFile = async (file?: File | null) => {
             <Field label="Currency">
               <input className={inputClass} value={draft.currency} maxLength={8} onChange={(e) => setDraft({ ...draft, currency: e.target.value })} />
             </Field>
+            <Field label="Price per">
+              <select className={inputClass} value={draft.price_period} onChange={(e) => setDraft({ ...draft, price_period: e.target.value })}>
+               <option value="">One-time (no period)</option>
+               <option value="month">Month / شهر</option>
+               <option value="week">Week / أسبوع</option>
+               <option value="year">Year / سنة</option>
+               <option value="session">Session / حصة</option>
+             </select>
+            </Field>
             <Field label="Max seats">
               <input type="number" min={1} className={inputClass} value={draft.max_seats} placeholder="Unlimited" onChange={(e) => setDraft({ ...draft, max_seats: e.target.value })} />
             </Field>
@@ -550,7 +559,7 @@ const handleImageFile = async (file?: File | null) => {
               <h3 className="mt-1 text-lg font-semibold text-ink">{p.title}</h3>
               <p className="mt-1 max-w-xl text-sm text-muted-foreground">{p.description}</p>
               <p className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm text-foreground">
-                <span>{formatPrice(p.price, p.currency)}</span>
+                <span>{formatPrice(p.price, p.currency, "en", p.price_period)}</span>
                 {p.duration && <span>{p.duration}</span>}
                 {p.schedule && <span>{p.schedule}</span>}
                 {p.start_date && <span>Starts {formatDate(p.start_date)}</span>}
