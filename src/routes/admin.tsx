@@ -286,6 +286,7 @@ type Draft = {
   pointsArText: string;
   image_url: string;
   price: string;
+  price_period: string;
   currency: string;
   duration: string;
   schedule: string;
@@ -305,6 +306,7 @@ const emptyDraft: Draft = {
   pointsArText: "",
   image_url: "",
   price: "",
+  price_period: "",
   currency: "DZD",
   duration: "",
   schedule: "",
@@ -326,6 +328,7 @@ function toDraft(p: PublicProgram): Draft {
     pointsArText: p.points_ar.join("\n"),
     image_url: p.image_url ?? "",
     price: p.price == null ? "" : String(p.price),
+    price_period: p.price_period ?? "",
     currency: p.currency,
     duration: p.duration,
     schedule: p.schedule,
@@ -395,6 +398,7 @@ const handleImageFile = async (file?: File | null) => {
           points_ar: d.pointsArText.split("\n").map((p) => p.trim()).filter(Boolean),
           image_url: d.image_url.trim() ? d.image_url.trim() : null,
           price: d.price.trim() === "" ? null : Number(d.price),
+          price_period: d.price_period as "" | "week" | "month" | "year" | "session",
           currency: d.currency.trim() || "DZD",
           duration: d.duration,
           schedule: d.schedule,
