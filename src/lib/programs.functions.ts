@@ -25,6 +25,7 @@ const programInput = z.object({
   points_ar: z.array(z.string().trim().max(160)).max(8).default([]),
   image_url: z.string().trim().max(500).nullable().default(null),
   price: z.number().min(0).max(10_000_000).nullable().default(null),
+  price_period: z.enum(["", "week", "month", "year", "session"]).default(""),
   currency: z.string().trim().min(1).max(8).default("DZD"),
   duration: z.string().trim().max(80).default(""),
   schedule: z.string().trim().max(120).default(""),
