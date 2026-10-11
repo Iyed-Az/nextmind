@@ -1,9 +1,18 @@
 import type { Lang } from "@/lib/language";
 
-export function formatPrice(price: number | null, currency: string, lang: Lang = "en") {
+const PERIODS: Record<string, { en: string; ar: string }> = {
+  week: { en: "week", ar: "أسبوع" },
+  month: { en: "month", ar: "شهر" },
+  year: { en: "year", ar: "سنة" },
+  session: { en: "session", ar: "حصة" },
+};
+
+export function formatPrice(price: number | null, currency: string, lang: Lang = "en", period = "") {
   if (price == null) return lang === "ar" ? "السعر عند الطلب" : "Price on request";
   if (price === 0) return lang === "ar" ? "مجاني" : "Free";
-  return `${new Intl.NumberFormat(lang === "ar" ? "ar-DZ" : "en-US").format(price)} ${currency}`;
+  const base = `${new Intl.NumberFormat(lang === "ar" ? "ar-DZ" : "en-US").format(price)} ${currency}`;
+  const per = PERIODS[period];
+  return per ? `${base} / ${per[lang]}` : base;
 }
 
 export function formatDate(d: string | null, lang: Lang = "en") {
