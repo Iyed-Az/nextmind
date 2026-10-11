@@ -16,6 +16,7 @@ import {
   lockAdmin,
   saveProgram,
   unlockAdmin,
+  uploadProgramImage,
 } from "@/lib/programs.functions";
 import type { EnrollmentStatus, PublicProgram, StudentSummary } from "@/lib/programs.server";
 import { ageFromBirthDate, formatDate, formatPrice } from "@/lib/format";
@@ -334,6 +335,18 @@ function toDraft(p: PublicProgram): Draft {
     is_published: p.is_published,
   };
 }
+async function compressImage(file: File): Promise<string> {
+  const bitmap = await createImageBitmap(file);
+  const scale = Math.min(1, 1280 / Math.max(bitmap.width, bitmap.height));
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.round(bitmap.width * scale);
+  canvas.height = Math.round(bitmap.height * scale);
+  const ctx = canvas.getContext("2d")!;
+  ctx.fillStyle = "#fff";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+  return canvas.toDataURL("image/jpeg", 0.82).split(",")[1];
+}
 
 function ProgramsTab() {
   const queryClient = useQueryClient();
@@ -341,6 +354,26 @@ function ProgramsTab() {
   const save = useServerFn(saveProgram);
   const remove = useServerFn(deleteProgram);
   const [draft, setDraft] = useState<Draft | null>(null);
+  const upload = useServerFn(uploadProgramImage);
+const [uploading, setUploading] = useState(false);
+
+const handleImageFile = async (file?: File | null) => {
+  if (!file || !file.type.startsWith("image/")) {
+    toast.error("Please choose an image file");
+    return;
+  }
+  setUploading(true);
+  try {
+    const base64 = await compressImage(file);
+    const { url } = await upload({ data: { base64 } });
+    setDraft((d) => (d ? { ...d, image_url: url } : d));
+    toast.success("Image uploaded");
+  } catch {
+    toast.error("Could not upload the image");
+  } finally {
+    setUploading(false);
+  }
+};
 
   const programsQuery = useQuery({ queryKey: ["admin-programs"], queryFn: () => list({}) });
   const refresh = () => {
@@ -462,9 +495,25 @@ function ProgramsTab() {
               <input type="date" className={inputClass} value={draft.start_date} onChange={(e) => setDraft({ ...draft, start_date: e.target.value })} />
             </Field>
           </div>
-          <Field label="Image URL (optional)">
-            <input className={inputClass} value={draft.image_url} maxLength={500} placeholder="https://…" onChange={(e) => setDraft({ ...draft, image_url: e.target.value })} />
-          </Field>
+         <div
+  onPaste={(e) => {
+    const f = Array.from(e.clipboardData.files).find((x) => x.type.startsWith("image/"));
+    if (f) {
+      e.preventDefault();
+      handleImageFile(f);
+    }
+  }}
+>
+  <span className="mb-1.5 block text-sm font-medium text-foreground">Image (optional)</span>
+  <input className={inputClass} value={draft.image_url} maxLength={500} placeholder="Paste an image here (Ctrl+V) or a direct image link…" onChange={(e) => setDraft({ ...draft, image_url: e.target.value })} />
+  <div className="mt-2 flex items-center gap-3">
+    <label className="btn-ghost cursor-pointer !px-4 !py-2 !text-sm">
+      {uploading ? "Uploading…" : "Upload from device"}
+      <input type="file" accept="image/*" className="hidden" disabled={uploading} onChange={(e) => { handleImageFile(e.target.files?.[0]); e.target.value = ""; }} />
+    </label>
+    {draft.image_url && <img src={draft.image_url} alt="" referrerPolicy="no-referrer" className="h-16 w-24 rounded-lg object-cover" />}
+  </div>
+</div>
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Display order">
               <input type="number" min={0} max={999} className={inputClass} value={draft.sort_order} onChange={(e) => setDraft({ ...draft, sort_order: Number(e.target.value) })} />
