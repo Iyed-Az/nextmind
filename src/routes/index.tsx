@@ -491,7 +491,7 @@ function Index() {
                               <div>
                                 <p className="text-xs text-muted-foreground">{t("price")}</p>
                                 <p className="font-display text-2xl font-extrabold leading-tight text-ink">
-                                  {formatPrice(p.price, p.currency, lang)}
+                                  {formatPrice(p.price, p.currency, lang, p.price_period)}
                                 </p>
                               </div>
                               {left != null && !full && (
