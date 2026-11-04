@@ -57,6 +57,7 @@ const dict = {
     ar: "يتم تحضير دورات جديدة — عد قريباً.",
     en: "New programs are being prepared — check back soon.",
   },
+  otherPrograms: { ar: "دورات أخرى", en: "Other programs" },
   price: { ar: "السعر", en: "Price" },
   duration: { ar: "المدة", en: "Duration" },
   schedule: { ar: "التوقيت", en: "Schedule" },
