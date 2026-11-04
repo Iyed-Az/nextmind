@@ -20,6 +20,7 @@ import {
 } from "@/lib/programs.functions";
 import type { EnrollmentStatus, PublicProgram, StudentSummary } from "@/lib/programs.server";
 import { ageFromBirthDate, formatDate, formatPrice } from "@/lib/format";
+import { PROGRAM_CATEGORIES, PROGRAM_CATEGORY_VALUES } from "@/lib/categories";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -279,6 +280,7 @@ type Draft = {
   id?: string;
   title: string;
   ages: string;
+  category: string;
   description: string;
   pointsText: string;
   titleAr: string;
@@ -299,6 +301,7 @@ type Draft = {
 const emptyDraft: Draft = {
   title: "",
   ages: "",
+  category: "",
   description: "",
   pointsText: "",
   titleAr: "",
@@ -321,6 +324,7 @@ function toDraft(p: PublicProgram): Draft {
     id: p.id,
     title: p.title,
     ages: p.ages,
+    category: p.category ?? "",
     description: p.description,
     pointsText: p.points.join("\n"),
     titleAr: p.title_ar,
@@ -391,6 +395,7 @@ const handleImageFile = async (file?: File | null) => {
           ...(d.id ? { id: d.id } : {}),
           title: d.title,
           ages: d.ages,
+          category: d.category as "" | (typeof PROGRAM_CATEGORY_VALUES)[number],
           description: d.description,
           points: d.pointsText.split("\n").map((p) => p.trim()).filter(Boolean),
           title_ar: d.titleAr.trim(),
@@ -527,6 +532,14 @@ const handleImageFile = async (file?: File | null) => {
     {draft.image_url && <img src={draft.image_url} alt="" referrerPolicy="no-referrer" className="h-16 w-24 rounded-lg object-cover" />}
   </div>
 </div>
+          <Field label="Category">
+            <select className={inputClass} value={draft.category} onChange={(e) => setDraft({ ...draft, category: e.target.value })}>
+              <option value="">— No category —</option>
+              {PROGRAM_CATEGORIES.map((c) => (
+                <option key={c.value} value={c.value}>{c.value}</option>
+              ))}
+            </select>
+          </Field>
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Display order">
               <input type="number" min={0} max={999} className={inputClass} value={draft.sort_order} onChange={(e) => setDraft({ ...draft, sort_order: Number(e.target.value) })} />
@@ -554,7 +567,7 @@ const handleImageFile = async (file?: File | null) => {
           <div key={p.id} className="card-soft card-interactive flex flex-wrap items-start justify-between gap-4 border-s-4 border-s-brand-warm p-5 sm:p-6">
             <div className="min-w-0 flex-1">
               <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-                #{p.sort_order} · {p.is_published ? "Visible" : "Hidden"} · {p.ages || "All ages"}
+                #{p.sort_order} · {p.is_published ? "Visible" : "Hidden"} · {p.ages || "All ages"} · {p.category || "No category"}
               </p>
               <h3 className="mt-1 text-lg font-semibold text-ink">{p.title}</h3>
               <p className="mt-1 max-w-xl text-sm text-muted-foreground">{p.description}</p>
