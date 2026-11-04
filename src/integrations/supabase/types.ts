@@ -93,6 +93,7 @@ export type Database = {
       }
       programs: {
         Row: {
+          category: string
           ages: string
           created_at: string
           currency: string
@@ -116,6 +117,7 @@ export type Database = {
           price: number | null
         }
         Insert: {
+          category?: string
           ages?: string
           created_at?: string
           currency?: string
@@ -139,6 +141,7 @@ export type Database = {
           price?: number | null
         }
         Update: {
+          category?: string
           ages?: string
           created_at?: string
           currency?: string
