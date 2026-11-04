@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-
+import { PROGRAM_CATEGORY_VALUES } from "./categories";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { getAdminSession, isUnlocked, passcodeMatches, requireUnlocked } from "./admin-session.server";
 import {
@@ -18,6 +18,7 @@ const programInput = z.object({
   id: z.string().uuid().optional(),
   title: z.string().trim().min(1).max(80),
   ages: z.string().trim().max(80).default(""),
+  category: z.union([z.literal(""), z.enum(PROGRAM_CATEGORY_VALUES)]).default(""),
   description: z.string().trim().max(600).default(""),
   points: z.array(z.string().trim().max(120)).max(8).default([]),
   title_ar: z.string().trim().max(120).default(""),
