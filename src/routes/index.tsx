@@ -4,6 +4,7 @@ import { ConsultationForm } from "@/components/ConsultationForm";
 import { listPrograms } from "@/lib/programs.functions";
 import type { PublicProgram } from "@/lib/programs.server";
 import { formatDate, formatPrice } from "@/lib/format";
+import { PROGRAM_CATEGORIES } from "@/lib/categories";
 import { useAuth } from "@/hooks/useAuth";
 import { useLanguage, LanguageToggle, localizedProgram } from "@/lib/language";
 import brandLogoLightUrl from "@/assets/nextmind-logo-brand-light.png";
@@ -109,6 +110,22 @@ function Index() {
   const programs = Route.useLoaderData() as PublicProgram[];
   const { user } = useAuth();
   const { t, lang } = useLanguage();
+
+  // Formations regroupées par catégorie (celles sans catégorie vont à la fin).
+  const indexedPrograms = programs.map((p, i) => ({ p, i }));
+  const programGroups: { key: string; label: string; items: typeof indexedPrograms }[] =
+    PROGRAM_CATEGORIES.map((c) => ({
+      key: c.value,
+      label: lang === "ar" ? c.ar : c.value,
+      items: indexedPrograms.filter((x) => x.p.category === c.value),
+    })).filter((g) => g.items.length > 0);
+  const uncategorized = indexedPrograms.filter(
+    (x) => !PROGRAM_CATEGORIES.some((c) => c.value === x.p.category),
+  );
+  if (uncategorized.length > 0) {
+    programGroups.push({ key: "other", label: t("otherPrograms"), items: uncategorized });
+  }
+  const showCategoryHeadings = !(programGroups.length === 1 && programGroups[0]?.key === "other");
 
   // Hide the floating mobile CTA once the booking form is on screen.
   const [bookingVisible, setBookingVisible] = useState(false);
@@ -419,8 +436,16 @@ function Index() {
             {programs.length === 0 ? (
               <p className="mt-12 text-muted-foreground">{t("emptyPrograms")}</p>
             ) : (
-              <div className="mt-12 grid items-stretch gap-6 md:grid-cols-3">
-                {programs.map((p, i) => {
+              <div className="mt-12 space-y-16">
+                {programGroups.map((g) => (
+                  <div key={g.key}>
+                    {showCategoryHeadings && (
+                      <h3 className="reveal mb-6 border-s-4 border-brand-warm ps-4 text-2xl font-extrabold text-ink sm:text-3xl">
+                        {g.label}
+                      </h3>
+                    )}
+                    <div className="grid items-stretch gap-6 md:grid-cols-3">
+                {g.items.map(({ p, i }) => {
                   const loc = localizedProgram(p, lang);
                   const full = p.max_seats != null && p.seats_taken >= p.max_seats;
                   const left =
@@ -445,9 +470,9 @@ function Index() {
                         </span>
                       </div>
                       <div className="flex flex-1 flex-col p-6">
-                        <h3 className="text-2xl font-extrabold leading-tight text-ink">
+                        <h4 className="text-2xl font-extrabold leading-tight text-ink">
                           {loc.title}
-                        </h3>
+                        </h4>
                         <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
                           {loc.description}
                         </p>
@@ -525,6 +550,9 @@ function Index() {
                     </article>
                   );
                 })}
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
           </div>
