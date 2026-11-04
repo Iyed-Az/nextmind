@@ -12,6 +12,7 @@ export type ProgramInput = {
   id?: string | undefined;
   title: string;
   ages: string;
+  category: string;
   description: string;
   points: string[];
   title_ar: string;
@@ -87,6 +88,7 @@ export async function upsertProgram(input: ProgramInput): Promise<Program> {
   const row = {
     title: input.title,
     ages: input.ages,
+    category: input.category,
     description: input.description,
     points: input.points.filter((p) => p.length > 0),
     title_ar: input.title_ar,
