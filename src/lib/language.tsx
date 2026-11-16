@@ -58,6 +58,13 @@ const dict = {
     en: "New programs are being prepared — check back soon.",
   },
   otherPrograms: { ar: "دورات أخرى", en: "Other programs" },
+  viewCategory: { ar: "عرض كل الدورات", en: "View all programs" },
+  backToPrograms: { ar: "العودة إلى الدورات", en: "Back to programs" },
+  categoryEmpty: {
+    ar: "لا توجد دورات في هذه الفئة حالياً — عد قريباً.",
+    en: "No programs in this category yet — check back soon.",
+  },
+  otherCategories: { ar: "فئات أخرى", en: "Other categories" },
   price: { ar: "السعر", en: "Price" },
   duration: { ar: "المدة", en: "Duration" },
   schedule: { ar: "التوقيت", en: "Schedule" },
